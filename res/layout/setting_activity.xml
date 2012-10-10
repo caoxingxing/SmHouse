@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:background="@drawable/wallpaper">
+
+	<include layout="@layout/custom_title_child"
+			android:id="@+id/include1"></include>
+
+	<ScrollView android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<LinearLayout android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="0dip" android:orientation="vertical"
+				android:layout_marginTop="20dip" android:layout_weight="1"
+				android:layout_marginLeft="10dip" android:layout_marginRight="10dip">
+
+				<FrameLayout android:layout_width="fill_parent"
+					android:layout_marginTop="10dip" android:layout_height="wrap_content"
+					android:background="@drawable/volume_selector" android:minHeight="50dip"
+					android:onClick="onClickSetDevice">
+					<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:textColor="#000000"
+						android:textSize="16sp" android:text="@string/devicemanager"
+						android:layout_marginLeft="20dip" android:layout_gravity="left|center_vertical">
+					</TextView>
+					<TextView android:id="@+id/txtDeviceNum"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:textColor="#666666" android:textSize="16sp" android:text="@string/zero"
+						android:layout_marginRight="20dip" android:layout_gravity="right|center_vertical">
+					</TextView>
+					<ImageView android:background="@drawable/n_small_arrow"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:gravity="center_vertical" android:layout_gravity="right|center_vertical"
+						android:contentDescription="@string/app_name">
+					</ImageView>
+				</FrameLayout>
+				
+				<FrameLayout android:layout_width="fill_parent"
+					android:layout_marginTop="10dip" android:layout_height="wrap_content"
+					android:background="@drawable/volume_selector" android:minHeight="50dip"
+					android:onClick="onClickAddDevice">
+					<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:textColor="#000000"
+						android:textSize="16sp" android:text="@string/adddevice"
+						android:layout_marginLeft="20dip" android:layout_gravity="left|center_vertical">
+					</TextView>
+					<ImageView android:background="@drawable/n_small_arrow"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:gravity="center_vertical" android:layout_gravity="right|center_vertical"
+						android:contentDescription="@string/app_name">
+					</ImageView>
+				</FrameLayout>
+
+				<FrameLayout android:layout_width="fill_parent"
+					android:layout_marginTop="10dip" android:layout_height="wrap_content"
+					android:background="@drawable/volume_selector" android:minHeight="50dip"
+					android:onClick="onClickDelMac">
+					<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:textColor="#000000"
+						android:textSize="16sp" android:text="@string/removemac"
+						android:layout_marginLeft="20dip" android:layout_gravity="left|center_vertical">
+					</TextView>
+					<ImageView android:background="@drawable/n_small_arrow"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:gravity="center_vertical" android:layout_gravity="right|center_vertical"
+						android:contentDescription="@string/app_name">
+					</ImageView>
+				</FrameLayout>
+			</LinearLayout>
+
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="vertical"
+				android:layout_marginLeft="10dip" android:layout_marginBottom="10dip">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:textColor="#666666"
+					android:textSize="15sp" android:text="@string/sungeoownversion"
+					android:layout_marginBottom="10dip" android:gravity="center_horizontal">
+				</TextView>
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:textColor="#666666"
+					android:textSize="15sp" android:text="@string/copyright"
+					android:layout_marginBottom="10dip" android:gravity="center_horizontal">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+	</ScrollView>
+
+</LinearLayout>

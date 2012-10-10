@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/array_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="50dip" >
+
+    <TextView
+        android:id="@+id/index_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_gravity="left|center_vertical"
+        android:gravity="center"
+        android:layout_marginLeft="10dip"
+        android:ellipsize="end"
+        android:text="" 
+        android:textColor="#000000"
+        android:textSize="20dip" />
+
+    <TextView
+        android:id="@+id/element_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="40dip"
+        android:ellipsize="end"
+        android:text=""
+        android:gravity="center"
+        android:textColor="#000000"
+        android:textSize="20dip" />
+
+    <ImageView
+        android:id="@+id/arrow_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:background="@drawable/n_small_arrow"
+        android:gravity="center" android:layout_marginRight="10dip"
+        android:contentDescription="@string/app_name" >
+    </ImageView>
+
+    <TextView
+        android:id="@+id/album_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_gravity="right|center_vertical"
+        android:gravity="center"
+        android:layout_marginRight="40dip"
+        android:ellipsize="end"
+        android:text=""
+        android:textColor="#000000"
+        android:textSize="20dip" />
+
+    <Button
+        android:id="@+id/dev_del_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:background="@drawable/cat_delete_btn"
+        android:text="@string/delete"
+        android:gravity="center"  android:layout_marginRight="10dip"
+        android:visibility="gone">
+    </Button>
+</FrameLayout>

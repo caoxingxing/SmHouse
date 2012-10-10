@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_titlebar"
+    android:layout_width="fill_parent"
+    android:layout_height="50dip"
+    android:orientation="vertical" 
+    android:background="@drawable/controlbar" >
+
+    <FrameLayout
+        android:id="@+id/clock_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:background="@drawable/controlbar">
+
+        <Button
+            android:id="@+id/childBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/title_back_btn"
+            android:onClick="onClickBack"
+            android:text=""
+            android:textColor="#ffffff" >
+        </Button>
+
+        <TextView
+            android:id="@+id/childTextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text=""
+            android:textColor="#ffffffff"
+            android:textSize="20sp" >
+        </TextView>
+
+        <Button
+            android:id="@+id/editdev_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_horizontal|center_vertical"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/title_edit_btn"
+            android:focusable="false"
+            android:gravity="center"
+            android:onClick="editDeviceInfo"
+            android:text="@string/edit"
+            android:textColor="#ff000000"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</LinearLayout>
