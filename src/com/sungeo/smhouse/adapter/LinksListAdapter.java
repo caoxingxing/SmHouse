@@ -19,6 +19,7 @@ public class LinksListAdapter extends BaseAdapter{
     private boolean mIsLearn = false;
     private Context mContext;
     private ArrayList<LinkInfo> mLinkInfo = new ArrayList<LinkInfo>(0);
+    private ArrayList<EditText> mEditTexts = new ArrayList<EditText>(0);
     
     public LinksListAdapter(Context context) {
         mContext = context;
@@ -64,7 +65,6 @@ public class LinksListAdapter extends BaseAdapter{
         TextView indexText = (TextView) view.findViewById(R.id.link_text);
         EditText indexEdit = (EditText) view.findViewById(R.id.edit_link_name);
         
-        
         Button openBtn = (Button) view.findViewById(R.id.open_btn);
         Button closeBtn = (Button) view.findViewById(R.id.close_btn);
         openBtn.setOnClickListener(mOpenOnClickListener);
@@ -78,6 +78,9 @@ public class LinksListAdapter extends BaseAdapter{
             indexText.setVisibility(View.GONE);
             indexEdit.setVisibility(View.VISIBLE);
             indexEdit.setText(mLinkInfo.get(position).getmLinkName());
+            //mEditTexts.add(indexEdit);
+            indexEdit.setTag(position);
+            addEditText(indexEdit, position);
         } else {
             openBtn.setText("´ò  ¿ª");
             closeBtn.setText("¹Ø  ±Õ");
@@ -90,7 +93,43 @@ public class LinksListAdapter extends BaseAdapter{
 
     public void setmIsLearn(boolean flag) {
         mIsLearn = flag;
+        mEditTexts.clear();
         notifyDataSetChanged();
+    }
+    
+    public ArrayList<LinkInfo> getmLinkInfo() {
+        return mLinkInfo;
+    }
+    
+    private void addEditText(EditText editText, int position) {
+        boolean flag = false;
+        int size = mEditTexts.size();
+        for (int i = 0; i < size; i ++) {
+            int tempPos = (Integer) mEditTexts.get(i).getTag();
+            if (tempPos == position) {
+                flag = true;
+                break;
+            }
+        }
+        
+        if (!flag) {
+            mEditTexts.add(editText);
+        }
+    }
+    
+    public void saveLinksName() {
+        if (!mIsLearn) {
+            return;
+        }
+        int size = mEditTexts.size();
+        int len = mLinkInfo.size();
+        if (size != len) {
+            return;
+        }
+        for (int i = 0; i < size; i ++) {
+            String tempName = mEditTexts.get(i).getText().toString();
+            mLinkInfo.get(i).setmLinkName(tempName);
+        }
     }
     
     View.OnClickListener mOpenOnClickListener = new View.OnClickListener() {

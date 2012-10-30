@@ -5,9 +5,25 @@
     android:orientation="vertical"
     android:background="@drawable/wallpaper">
     <include layout="@layout/custom_title_child"></include>
+
+    <ListView
+        android:id="@+id/setlink_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="#00000000"
+        android:choiceMode="singleChoice"
+        android:divider="#FFCC00" 
+        android:layout_marginTop="10dip">
 
-    <ListView android:layout_width="fill_parent" android:id="@+id/setlink_listview"
-		android:layout_height="fill_parent" android:cacheColorHint="#00000000"
-		android:choiceMode="singleChoice" android:divider="#FFCC00">
 	</ListView>
+	<TextView
+        android:id="@+id/explanation_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_horizontal"
+        android:gravity="left"
+        android:ellipsize="end"
+        android:text="@string/learnexplanation" 
+        android:textColor="#000000"
+        android:textSize="20dip" />
 </LinearLayout>

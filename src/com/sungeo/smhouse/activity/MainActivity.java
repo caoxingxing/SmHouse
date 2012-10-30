@@ -12,34 +12,38 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sungeo.smhouse.R;
 import com.sungeo.smhouse.adapter.DevicesListAdapter;
 import com.sungeo.smhouse.data.LinkInfo;
 import com.sungeo.smhouse.service.BluetoothService;
-import com.sungeo.smhouse.util.AnimCommon;
 import com.sungeo.smhouse.util.MsgHandler;
 
 import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
+    private TextView mConStaTxt;
     private ListView mListView;
     private DevicesListAdapter mDevAdapter;
     private final int MENU_ITEM_ALL_OPEN = 0;
     private final int MENU_ITEM_ALL_CLOSE = 1;
-    private final int MENU_ITEM_ABOUT = 3;
     private boolean mSendBusy = false;
+    private int titleHeight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getWindowManager().getDefaultDisplay().getMetrics(mMainApp.mMetrics);
+        titleHeight = (int)(50 * mMainApp.mMetrics.density);
         setTitle("设备列表");
 
         initSetBtn();
         mListView = (ListView) findViewById(R.id.device_listview);
-
+        mConStaTxt = (TextView) findViewById(R.id.connect_status_text);
         mListView.setOnItemClickListener(mOnItemClickListener);
     }
 
@@ -48,17 +52,23 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         loadDataToList();
         if (mMainApp.mBtService.getState() == BluetoothService.STATE_CONNECTED) {
+            mConStaTxt.setVisibility(View.GONE);
             return;
         }
-        Message msg = mMsgHandler.obtainMessage();
-        msg.what = MsgHandler.MSG_TYPE_START_FIND;
-        mMsgHandler.sendMessage(msg);
+        mConStaTxt.setVisibility(View.VISIBLE);
+        mConStaTxt.setText(R.string.nosmartdeviceconnected);
+        if (!mMainApp.mIsFindBt) {
+            Message msg = mMsgHandler.obtainMessage();
+            msg.what = MsgHandler.MSG_TYPE_START_FIND;
+            mMsgHandler.sendMessage(msg);
+            mMainApp.mIsFindBt = true;
+        }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            finish();
+            onExitApp();
             return true;
         }
         return false;
@@ -70,7 +80,6 @@ public class MainActivity extends BaseActivity {
 
         menu.add(0, MENU_ITEM_ALL_OPEN, MENU_ITEM_ALL_OPEN, "全开");
         menu.add(1, MENU_ITEM_ALL_CLOSE, MENU_ITEM_ALL_CLOSE, "全关");
-        menu.add(2, MENU_ITEM_ABOUT, MENU_ITEM_ABOUT, "重新连接");
 
         return ret;
     }
@@ -84,48 +93,65 @@ public class MainActivity extends BaseActivity {
             allDevOpen();
         } else if (itemId == MENU_ITEM_ALL_CLOSE) {
             allDevClose();
-        } else if (itemId == MENU_ITEM_ABOUT) {
-            Message msg = mMsgHandler.obtainMessage();
-            msg.what = MsgHandler.MSG_TYPE_START_FIND;
-            mMsgHandler.sendMessage(msg);
         }
         return ret;
     }
 
     @Override
     public void onPause() {
-        boolean flag = mMainApp.mAnimation;
-        if (flag) {
-            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.DONUT) {
-                (new AnimCommon(this)).overridePendingTransition(R.anim.right_in, R.anim.right_out);
-            }
-            mMainApp.mAnimation = false;
-        }
-
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        cancelToast();
-        mMainApp.mBtAdapter.disable();
-        mMainApp.mBtService.stop();
         super.onDestroy();
     }
 
     @Override
     public void refreshUi(Message msg) {
+        switch (msg.what) {
+            case MsgHandler.MSG_TYPE_CONNECT_SUCESS:
+                mConStaTxt.setText("连接成功！");
+                mConStaTxt.setVisibility(View.GONE);
+                RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                lParams.setMargins(0, titleHeight, 0, 0);
+                mListView.setLayoutParams(lParams);
+                break;
+            case MsgHandler.MSG_TYPE_CONNECT_FAIL:
+                if (sConfirmExit) {
+                    break;
+                }
+                mConStaTxt.setText(R.string.nosmartdeviceconnected);
+                stopService();
+                connect();
+                break;
+            case MsgHandler.MSG_TYPE_CONNECT_LOST:
+                if (sConfirmExit) {
+                    break;
+                }
+                RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                rlParams.setMargins(0, titleHeight, 0, titleHeight);
+                mListView.setLayoutParams(rlParams);
+                mConStaTxt.setVisibility(View.VISIBLE);
+                mConStaTxt.setText(R.string.nosmartdeviceconnected);
+                stopService();
+                connect();
+                break;
+            default:
+                break;
+        }
     }
 
     private void initSetBtn() {
         Button setBtn = (Button) findViewById(R.id.childBackButton);
-        setBtn.setBackgroundResource(R.drawable.title_edit_btn);
-        setBtn.setTextColor(0xff000000);
-        setBtn.setEnabled(true);
-        setBtn.setText("设置");
+        setBtn.setVisibility(View.GONE);
+        Button editBtn = (Button) findViewById(R.id.editdev_btn);
+        editBtn.setVisibility(View.VISIBLE);
+        editBtn.setText("");
+        editBtn.setBackgroundResource(R.drawable.settings);
     }
 
-    public void onClickBack(View v) {
+    public void editDeviceInfo(View v) {
         mMainApp.mAnimation = true;
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, SettingActivity.class);

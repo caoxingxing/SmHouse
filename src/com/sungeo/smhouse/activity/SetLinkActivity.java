@@ -39,7 +39,7 @@ public class SetLinkActivity extends BaseActivity{
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            finish();
+            saveLinksName();
             return true;
         }
         return false;
@@ -47,11 +47,17 @@ public class SetLinkActivity extends BaseActivity{
     
     @Override
     public void refreshUi(Message msg) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void onClickBack(View v) {
+        saveLinksName();
+    }
+    
+    private void saveLinksName() {
+        mLinkAdapter.saveLinksName();
+        mMainApp.mDevices.get(mPosition).setmLinks(mLinkAdapter.getmLinkInfo());
+        mMainApp.createXmlFile();
+        showToast("±£´æ³É¹¦£¡");
         finish();
     }
     

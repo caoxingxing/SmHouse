@@ -28,6 +28,19 @@
         android:gravity="center"
         android:textColor="#000000"
         android:textSize="20dip" />
+    <EditText
+        android:id="@+id/edit_dev_name"
+        android:layout_width="150dip"
+        android:layout_height="50dip"
+        android:text="" android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="40dip"
+        android:ems="10" android:maxLength="5"
+        android:hint="@string/edit_dev_name_hint" 
+        android:textColor="#000000" android:textSize="20dip"
+        android:focusable="false"
+        android:clickable="false"
+        android:visibility="gone">
+    </EditText>
 
     <ImageView
         android:id="@+id/arrow_img"

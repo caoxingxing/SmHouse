@@ -64,11 +64,6 @@
 						android:textSize="16sp" android:text="@string/removemac"
 						android:layout_marginLeft="20dip" android:layout_gravity="left|center_vertical">
 					</TextView>
-					<ImageView android:background="@drawable/n_small_arrow"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:gravity="center_vertical" android:layout_gravity="right|center_vertical"
-						android:contentDescription="@string/app_name">
-					</ImageView>
 				</FrameLayout>
 			</LinearLayout>
 

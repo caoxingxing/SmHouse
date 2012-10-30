@@ -48,7 +48,7 @@ public class BluetoothService {
 
     // Member fields
     private final BluetoothAdapter mAdapter;
-    private final Handler mHandler;
+    private Handler mHandler;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
@@ -74,6 +74,10 @@ public class BluetoothService {
         mHandler = handler;
     }
 
+    public void setHandler(Handler handler) {
+        mHandler = handler;
+    }
+    
     private synchronized void setState(int state) {
         if (D)
             Log.d(TAG, "setState() " + mState + " -> " + state);

@@ -36,7 +36,7 @@ public class MainApplication extends Application {
     private static final String XML_TAG_SIX_BYTE = "SixByte";
     private static final String XML_TAG_CLOSE_CMD = "CloseCmd";
 
-    public final long mDelay = 1000;
+    public final long mDelay = 500;
     private static final int CODE_LEN = 3;
     private static MainApplication instance;
     public DisplayMetrics mMetrics;
@@ -44,6 +44,7 @@ public class MainApplication extends Application {
     public BluetoothAdapter mBtAdapter = null;
     public String mBtMacAddre = null;
     public boolean mAnimation = false;
+    public boolean mIsFindBt = false;
     public ArrayList<DevicesInfo> mDevices = new ArrayList<DevicesInfo>(0);
     private static final String DEVICES_INFO_PATH = Environment.getExternalStorageDirectory()
             .getPath()

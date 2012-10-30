@@ -15,11 +15,26 @@
     <string name="edit">编辑</string>
     <string name="allopen">全   开</string>
     <string name="allclose">全   关</string>
-    <string name="devicemanager">设备管理:</string>
+    <string name="devicemanager">管理设备:</string>
     <string name="zero">0</string>
     <string name="adddevice">添加设备:</string>
-    <string name="removemac">删除MAC:</string>
+    <string name="removemac">删除蓝牙地址</string>
     <string name="sungeoownversion">曦光科技 版权所有</string>
     <string name="copyright" formatted="false">Copyright&#064;2006&#8211;2012 Sungeo</string>
-
+	<string name="learnexplanation">学习命令说明：（以三联开关为例）\n1.在开关面板上从左到右依次是1联、2联、3联；\n2.学习1联时，长按开关1联，听到开关响两声即进入学习状态；\n3.此时看1联所控制灯的状态，如果为开，点击以上的“学习开”按钮；如果灯的状态为关，则点击以上的“学习关”按钮；听到开关响一声后即为学习成功；\n4.其他联的学习步骤依此类推。</string>
+	<string name="btdevexplanation">说明：请先触发蓝牙设备（如果没有发现设备或连接不成功请多次触发），根据以下步骤完成连接：</string>
+	<string name="btdevlisttitle">蓝牙设备列表</string>
+	<string name="steponeopenbt">1.打开手机蓝牙（……）</string>
+	<string name="steponeopenbtok">1.打开手机蓝牙（成功）</string>
+	<string name="steponeopenbtfail">1.打开手机蓝牙（失败）</string>
+	<string name="steptwodiscoverbt">2.搜索智能模块（……）</string>
+	<string name="steptwodiscoverbtok">2.搜索智能模块（成功）</string>
+	<string name="steptwodiscoverbtfail">2.搜索智能模块（失败）</string>
+	<string name="stepthreeselectbt">3.选择智能模块（……）</string>
+	<string name="stepthreeselectbtok">3.选择智能模块（已选择）</string>
+	<string name="stepthreeselectbtfail">3.选择智能模块（未选择）</string>
+	<string name="stepfourconnectingbt">4.连接智能模块（……）</string>
+	<string name="stepfourconnectingbtok">4.连接智能模块（成功）</string>
+	<string name="stepfourconnectingbtfail">4.连接智能模块（失败）</string>
+	<string name="nosmartdeviceconnected">没有连接智能模块</string>
 </resources>

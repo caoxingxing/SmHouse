@@ -70,7 +70,7 @@ public class DeviceMgrActivity extends BaseActivity{
     }
     
     private void loadDataToList() {
-        mDevAdapter = new DevicesListAdapter(this, mMainApp.mDevices);
+        mDevAdapter = new DevicesListAdapter(this, mMainApp.mDevices, false);
         mDevMgrList.setAdapter(mDevAdapter);
     }
     

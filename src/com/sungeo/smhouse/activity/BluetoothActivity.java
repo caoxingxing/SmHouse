@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 import com.sungeo.smhouse.R;
 import com.sungeo.smhouse.service.BluetoothService;
@@ -26,9 +27,11 @@ import com.sungeo.smhouse.util.MsgHandler;
 public class BluetoothActivity extends BaseActivity{
     private ListView mListView;
     private Button mCancelBtn;
+    private TextView mStepOneText, mStepTwoText, mStepThreeText, mStepFourText;
     private ArrayAdapter<String> mDevicesAdapter;
+    private final int mStepOne = 1, mStepTwo = 2, mStepThree = 3, mStepFour = 4;
     
-    private final int RECONNECT_COUNT = 10;
+    private final int RECONNECT_COUNT = 3;
     private int mReConnectCounter = 0;
     
     @Override
@@ -48,6 +51,7 @@ public class BluetoothActivity extends BaseActivity{
         
         mListView.setOnItemClickListener(mOnItemClickListener);
         
+        initStepText();
         initBackBtn();
         mCancelBtn = (Button) findViewById(R.id.cancel_btn);
         mCancelBtn.setOnClickListener(mOnClickListener);
@@ -72,15 +76,7 @@ public class BluetoothActivity extends BaseActivity{
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            cancelToast();
-            if (mMainApp.mBtAdapter != null) {
-                mMainApp.mBtAdapter.disable();
-            }
-            if (mMainApp.mBtService != null) {
-                mMainApp.mBtService.stop();
-            }
-            
-            finish();
+            onExitApp();
             return true;
         }
         return false;
@@ -96,6 +92,67 @@ public class BluetoothActivity extends BaseActivity{
     public void onDestroy() {
         cancelToast();
         super.onDestroy();
+    }
+    
+    private void initStepText() {
+        mStepOneText = (TextView) findViewById(R.id.textView_stepOne);
+        mStepOneText.setBackgroundColor(0xffffc700);
+        mStepTwoText = (TextView) findViewById(R.id.textView_stepTwo);
+        mStepThreeText = (TextView) findViewById(R.id.textView_setpThree);
+        mStepFourText = (TextView) findViewById(R.id.textView_stepFour);
+    }
+    
+    private void stepFail(int index) {
+        mStepOneText.setBackgroundColor(0x00000000);
+        mStepTwoText.setBackgroundColor(0x00000000);
+        mStepThreeText.setBackgroundColor(0x00000000);
+        mStepFourText.setBackgroundColor(0x00000000);
+        switch (index) {
+            case mStepOne:
+                mStepOneText.setBackgroundColor(0xffffc700);
+                mStepOneText.setText(R.string.steponeopenbtfail);
+                break;
+            case mStepTwo:
+                mStepTwoText.setBackgroundColor(0xffffc700);
+                mStepTwoText.setText(R.string.steptwodiscoverbtfail);
+                break;
+            case mStepThree:
+                mStepThreeText.setBackgroundColor(0xffffc700);
+                mStepThreeText.setText(R.string.stepthreeselectbtfail);
+                break;
+            case mStepFour:
+                mStepFourText.setBackgroundColor(0xffffc700);
+                mStepFourText.setText(R.string.stepfourconnectingbtfail);
+                break;
+                default:
+                    break;
+        }
+    }
+    
+    private void stepOk(int index) {
+        mStepOneText.setBackgroundColor(0x00000000);
+        mStepTwoText.setBackgroundColor(0x00000000);
+        mStepThreeText.setBackgroundColor(0x00000000);
+        mStepFourText.setBackgroundColor(0x00000000);
+        switch (index) {
+            case mStepOne:
+                mStepTwoText.setBackgroundColor(0xffffc700);
+                mStepOneText.setText(R.string.steponeopenbtok);
+                break;
+            case mStepTwo:
+                mStepThreeText.setBackgroundColor(0xffffc700);
+                mStepTwoText.setText(R.string.steptwodiscoverbtok);
+                break;
+            case mStepThree:
+                mStepFourText.setBackgroundColor(0xffffc700);
+                mStepThreeText.setText(R.string.stepthreeselectbtok);
+                break;
+            case mStepFour:
+                mStepFourText.setText(R.string.stepfourconnectingbtok);
+                break;
+                default:
+                    break;
+        }
     }
     
     private void initBackBtn() {
@@ -182,6 +239,7 @@ public class BluetoothActivity extends BaseActivity{
                 return;
             }
             mMainApp.mBtMacAddre = tmp[1];
+            stepOk(mStepThree);
             connect();
         }
     };
@@ -202,12 +260,10 @@ public class BluetoothActivity extends BaseActivity{
                 Log.v("sungeobt", "find device:" + device.getName()
                             + device.getAddress());
                 mDevicesAdapter.add(device.getName() + "\n" + device.getAddress());
-                showToast("发现蓝牙设备");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {// 搜索完成
-                setTitle("搜索完成");
-                showToast("搜索完成");
+                stepOk(mStepTwo);
                 if (mDevicesAdapter.getCount() == 0) {
-                    showToast("没有找到蓝牙设备");
+                    stepFail(mStepTwo);
                     mMsgHandler.postDelayed(new Runnable() {
 
                         @Override
@@ -225,8 +281,10 @@ public class BluetoothActivity extends BaseActivity{
             } else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF);
                 if (state == BluetoothAdapter.STATE_ON) {
-                    showToast("蓝牙打开成功！");
+                    stepOk(mStepOne);
                     connect();
+                } else {
+                    stepFail(mStepOne);
                 }
             }
         }
@@ -236,11 +294,13 @@ public class BluetoothActivity extends BaseActivity{
     public void refreshUi(Message msg) {
         switch (msg.what) {
             case MsgHandler.MSG_TYPE_CONNECT_SUCESS:
+                stepOk(mStepFour);
                 showDevicesList();
                 break;
             case MsgHandler.MSG_TYPE_CONNECT_FAIL:
-                if (getReConnectCounter() >= getReConnectNum()) {
+                /*if (getReConnectCounter() >= getReConnectNum()) {
                     showToast("连接失败，请退出程序重新连接");
+                    stepFail(mStepFour);
                     clearReConnectCounter();
                     return;
                 } else {
@@ -248,7 +308,7 @@ public class BluetoothActivity extends BaseActivity{
                 }
                 showToast("连接失败，重新连接！");
                 stopService();
-                connect();
+                connect();*/
                 break;
             default:
                 break;

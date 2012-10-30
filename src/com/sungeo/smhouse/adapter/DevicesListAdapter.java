@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.sungeo.smhouse.data.MainApplication;
 import java.util.ArrayList;
 
 public class DevicesListAdapter extends BaseAdapter{
+    private boolean mIsEditName;
     private boolean mIsDelete;
     private int mSelecteItem;
     private ArrayList<DevicesInfo> mDevInfo = new ArrayList<DevicesInfo>(0);
@@ -26,6 +28,13 @@ public class DevicesListAdapter extends BaseAdapter{
     public DevicesListAdapter(Context context, ArrayList<DevicesInfo> objects) {
         mContext = context;
         mDevInfo = objects;
+        mIsEditName = false;
+    }
+    
+    public DevicesListAdapter(Context context, ArrayList<DevicesInfo> objects, boolean edit) {
+        mContext = context;
+        mDevInfo = objects;
+        mIsEditName = edit;
     }
 
     @Override
@@ -44,21 +53,35 @@ public class DevicesListAdapter extends BaseAdapter{
         indexText.setText((position + 1) + ". ");
         
         TextView elementText = (TextView) view.findViewById(R.id.element_text);
-        elementText.setText(mDevInfo.get(position).getmDevName());
+        EditText editText = (EditText) view.findViewById(R.id.edit_dev_name);
+        
+        if (mIsEditName) {
+            editText.setVisibility(View.VISIBLE);
+            elementText.setVisibility(View.GONE);
+            editText.setText(mDevInfo.get(position).getmDevName());
+        } else {
+            editText.setVisibility(View.GONE);
+            elementText.setVisibility(View.VISIBLE);
+            elementText.setText(mDevInfo.get(position).getmDevName());
+        }
         
         TextView secEleText = (TextView) view.findViewById(R.id.album_text);
-        String tempStr = String.valueOf(mDevInfo.get(position).getmLinks().size());
-        secEleText.setText(tempStr);
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append(mDevInfo.get(position).getmLinks().size());
+        strBuf.append("Áª");
+        secEleText.setText(strBuf.toString());
         
         ImageView arrowImg = (ImageView) view.findViewById(R.id.arrow_img);
         Button delBtn = (Button) view.findViewById(R.id.dev_del_btn);
         if (ismIsDelete()) {
             arrowImg.setVisibility(View.GONE);
+            secEleText.setVisibility(View.GONE);
             delBtn.setVisibility(View.VISIBLE);
             delBtn.setTag(position);
             delBtn.setOnClickListener(mOnClickListener);
         } else {
             arrowImg.setVisibility(View.VISIBLE);
+            secEleText.setVisibility(View.VISIBLE);
             delBtn.setVisibility(View.GONE);
         }
 

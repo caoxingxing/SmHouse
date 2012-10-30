@@ -14,10 +14,16 @@ import com.sungeo.smhouse.data.MainApplication;
 import com.sungeo.smhouse.service.BluetoothService;
 import com.sungeo.smhouse.util.MsgHandler;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public abstract class BaseActivity extends Activity{
+    public static BaseActivity sCurActivity;
     protected MainApplication mMainApp;
     protected MsgHandler mMsgHandler;
     private Toast mToast;
+    protected boolean mExitFlag = false;
+    protected static boolean sConfirmExit = false;
     
     public abstract void refreshUi(Message msg);// 状态同步消息传递
     
@@ -29,9 +35,19 @@ public abstract class BaseActivity extends Activity{
         initMsgHandler();
         if (mMainApp.mBtService == null) {
             mMainApp.mBtService = new BluetoothService(mMsgHandler);
+        } else {
+            mMainApp.mBtService.setHandler(mMsgHandler);
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        sCurActivity = this;
+        sConfirmExit = false;
+        cancelToast();
+    }
+    
     private void initMsgHandler() {
         mMsgHandler = new MsgHandler() {
             @Override
@@ -53,7 +69,9 @@ public abstract class BaseActivity extends Activity{
                         showToast("连接成功！");
                         saveMacAddress();
                     default:
-                        refreshUi(msg);
+                        if (sCurActivity != null) {
+                            sCurActivity.refreshUi(msg);
+                        }
                         break;
                 }
             }
@@ -83,6 +101,41 @@ public abstract class BaseActivity extends Activity{
         }
     }
     
+    public void onExitApp() {
+        if (sConfirmExit == true) {
+            mExitFlag = true;
+            
+            cancelToast();
+            finish();
+            if (mMainApp.mBtAdapter != null) {
+                mMainApp.mBtAdapter.disable();
+            }
+            if (mMainApp.mBtService != null) {
+                mMainApp.mBtService.stop();
+            }
+            mMainApp.mIsFindBt = false;
+            finish();
+        } else {
+            startExitCheck();
+        }
+    }
+    
+    private void startExitCheck() {
+        showToast("再按一次退出程序");
+        
+        sConfirmExit = true;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                sConfirmExit = false;
+                cancelToast();
+            }
+
+        }, 3000);
+    }
+    
     protected void openBt() {
         if (!mMainApp.mBtAdapter.isEnabled()) {
             // 弹出对话框提示用户是后打开
@@ -92,7 +145,6 @@ public abstract class BaseActivity extends Activity{
             // 不做提示，强行打开
             mMainApp.mBtAdapter.enable();
         } else {
-            showToast("蓝牙已处于开启状态！");
             Message msg = mMsgHandler.obtainMessage();
             msg.what = MsgHandler.MSG_TYPE_START_CONNECT;
             mMsgHandler.sendMessage(msg);
@@ -100,15 +152,13 @@ public abstract class BaseActivity extends Activity{
     }
     
     protected void connect() {
+        if (mMainApp.mBtService == null) {
+            return;
+        }
         mMainApp.mBtService.start();
 
         if (mMainApp.mBtMacAddre == null) {
-            boolean flag = mMainApp.mBtAdapter.startDiscovery();
-            if (flag) {
-                showToast("开始搜索设备……");
-            } else {
-                showToast("开始搜索失败");
-            }   
+            mMainApp.mBtAdapter.startDiscovery();
         } else {
             BluetoothDevice device = null;
             if (BluetoothAdapter.checkBluetoothAddress(mMainApp.mBtMacAddre)) {
@@ -142,6 +192,8 @@ public abstract class BaseActivity extends Activity{
     }
     
     protected void stopService() {
-        mMainApp.mBtService.stop();
+        if (mMainApp.mBtService != null) {
+            mMainApp.mBtService.stop();
+        }
   }
 }
