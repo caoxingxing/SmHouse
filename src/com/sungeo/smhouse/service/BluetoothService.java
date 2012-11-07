@@ -272,7 +272,12 @@ public class BluetoothService {
                 if (secure) {
                     tmp = device.createRfcommSocketToServiceRecord(SPP_UUID);
                 } else {
-                    tmp = device.createInsecureRfcommSocketToServiceRecord(SPP_UUID);
+                    int temp = android.os.Build.VERSION.SDK_INT;
+                    if (temp <= android.os.Build.VERSION_CODES.GINGERBREAD) {
+                        tmp = device.createRfcommSocketToServiceRecord(SPP_UUID);
+                    } else {
+                        tmp = device.createInsecureRfcommSocketToServiceRecord(SPP_UUID);
+                    }
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);

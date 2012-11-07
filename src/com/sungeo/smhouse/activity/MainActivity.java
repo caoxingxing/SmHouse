@@ -22,6 +22,8 @@ import com.sungeo.smhouse.service.BluetoothService;
 import com.sungeo.smhouse.util.MsgHandler;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends BaseActivity {
     private TextView mConStaTxt;
@@ -30,6 +32,8 @@ public class MainActivity extends BaseActivity {
     private final int MENU_ITEM_ALL_OPEN = 0;
     private final int MENU_ITEM_ALL_CLOSE = 1;
     private boolean mSendBusy = false;
+    private int mOpenBtNum = 0;
+    private Timer mTimer;
     private int titleHeight;
 
     @Override
@@ -57,11 +61,35 @@ public class MainActivity extends BaseActivity {
         }
         mConStaTxt.setVisibility(View.VISIBLE);
         mConStaTxt.setText(R.string.nosmartdeviceconnected);
-        if (!mMainApp.mIsFindBt) {
+        if (!mMainApp.mBtAdapter.isEnabled()) {
             Message msg = mMsgHandler.obtainMessage();
-            msg.what = MsgHandler.MSG_TYPE_START_FIND;
+            msg.what = MsgHandler.MSG_TYPE_OPEN_BT;
             mMsgHandler.sendMessage(msg);
-            mMainApp.mIsFindBt = true;
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    if (mMainApp.mBtAdapter.isEnabled()) {
+                        Message msg = mMsgHandler.obtainMessage();
+                        msg.what = MsgHandler.MSG_TYPE_START_CONNECT;
+                        mMsgHandler.sendMessage(msg);
+                        mTimer.cancel();
+                    } else {
+                        if (mOpenBtNum > 5) {
+                            Message msg = mMsgHandler.obtainMessage();
+                            msg.what = MsgHandler.MSG_TYPE_OPEN_BT;
+                            mMsgHandler.sendMessage(msg);
+                            mOpenBtNum = 0;
+                        } else {
+                            mOpenBtNum ++;
+                        }
+                    }
+                }}, 1000, 5000);
+        } else {
+            Message msg = mMsgHandler.obtainMessage();
+            msg.what = MsgHandler.MSG_TYPE_START_CONNECT;
+            mMsgHandler.sendMessage(msg);
         }
     }
 

@@ -30,9 +30,7 @@ public class BluetoothActivity extends BaseActivity{
     private TextView mStepOneText, mStepTwoText, mStepThreeText, mStepFourText;
     private ArrayAdapter<String> mDevicesAdapter;
     private final int mStepOne = 1, mStepTwo = 2, mStepThree = 3, mStepFour = 4;
-    
-    private final int RECONNECT_COUNT = 3;
-    private int mReConnectCounter = 0;
+    private boolean mIsRegister = false;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +54,9 @@ public class BluetoothActivity extends BaseActivity{
         mCancelBtn = (Button) findViewById(R.id.cancel_btn);
         mCancelBtn.setOnClickListener(mOnClickListener);
         
-        registerReceiver();
+        if (mMainApp.mBtMacAddre == null) {
+            registerReceiver();
+        }
 
         mMainApp.mBtAdapter = BluetoothAdapter.getDefaultAdapter();
     }
@@ -69,7 +69,7 @@ public class BluetoothActivity extends BaseActivity{
             return;
         }
         Message msg = mMsgHandler.obtainMessage();
-        msg.what = MsgHandler.MSG_TYPE_START_FIND;
+        msg.what = MsgHandler.MSG_TYPE_OPEN_BT;
         mMsgHandler.sendMessage(msg);
     }
     
@@ -168,27 +168,9 @@ public class BluetoothActivity extends BaseActivity{
     }
 
     private void deconnectBt() {
-        if (mReceiver != null) {
+        if (mReceiver != null && mIsRegister) {
             unregisterReceiver(mReceiver);
         }
-
-        mReceiver = null;
-    }
-
-    private int getReConnectCounter() {
-        return mReConnectCounter;
-    }
-    
-    private void clearReConnectCounter() {
-        mReConnectCounter = 0;
-    }
-    
-    private void setReConnectCounter() {
-        mReConnectCounter ++;
-    }
-    
-    private int getReConnectNum() {
-        return RECONNECT_COUNT;
     }
 
     private void initMacAddress() {
@@ -205,6 +187,7 @@ public class BluetoothActivity extends BaseActivity{
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver, filter);
+        mIsRegister = true;
     }
 
     View.OnClickListener mOnClickListener = new View.OnClickListener() {

@@ -44,7 +44,6 @@ public class MainApplication extends Application {
     public BluetoothAdapter mBtAdapter = null;
     public String mBtMacAddre = null;
     public boolean mAnimation = false;
-    public boolean mIsFindBt = false;
     public ArrayList<DevicesInfo> mDevices = new ArrayList<DevicesInfo>(0);
     private static final String DEVICES_INFO_PATH = Environment.getExternalStorageDirectory()
             .getPath()

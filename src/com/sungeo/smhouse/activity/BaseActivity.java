@@ -31,6 +31,11 @@ public abstract class BaseActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMainApp = MainApplication.getInstance();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         
         initMsgHandler();
         if (mMainApp.mBtService == null) {
@@ -38,11 +43,7 @@ public abstract class BaseActivity extends Activity{
         } else {
             mMainApp.mBtService.setHandler(mMsgHandler);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+        
         sCurActivity = this;
         sConfirmExit = false;
         cancelToast();
@@ -59,7 +60,7 @@ public abstract class BaseActivity extends Activity{
                         String str = (String)msg.obj;
                         showToast(str);
                         break;
-                    case MSG_TYPE_START_FIND:
+                    case MSG_TYPE_OPEN_BT:
                         openBt();
                         break;
                     case MSG_TYPE_START_CONNECT:
@@ -113,7 +114,7 @@ public abstract class BaseActivity extends Activity{
             if (mMainApp.mBtService != null) {
                 mMainApp.mBtService.stop();
             }
-            mMainApp.mIsFindBt = false;
+
             finish();
         } else {
             startExitCheck();
@@ -144,11 +145,7 @@ public abstract class BaseActivity extends Activity{
             // startActivityForResult(enabler, REQUEST_ENABLE);
             // 不做提示，强行打开
             mMainApp.mBtAdapter.enable();
-        } else {
-            Message msg = mMsgHandler.obtainMessage();
-            msg.what = MsgHandler.MSG_TYPE_START_CONNECT;
-            mMsgHandler.sendMessage(msg);
-        }
+        } 
     }
     
     protected void connect() {
